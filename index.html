@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trăng Nhỏ Mê Thịt — Đọc Truyện Chữ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <style>
+    :root {
+      --bg-main: #f7f5fc;
+      --bg-card: #ffffff;
+      --bg-soft: #eeeaf8;
+      --text-main: #1f1b2e;
+      --text-muted: #67607d;
+      --accent: #6d4aff;
+      --accent-soft: rgba(109, 74, 255, 0.12);
+      --border: rgba(31, 27, 46, 0.1);
+    }
+    html.dark {
+      --bg-main: #121118;
+      --bg-card: #191722;
+      --bg-soft: #221f2e;
+      --text-main: #e6e2f2;
+      --text-muted: #9a93b2;
+      --accent: #8c72ff;
+      --accent-soft: rgba(140, 114, 255, 0.16);
+      --border: rgba(230, 226, 242, 0.1);
+    }
+    html[data-theme="spring"] {
+      --bg-main: #f5fbf7;
+      --bg-card: #ffffff;
+      --bg-soft: #e6f5ec;
+      --text-main: #162b20;
+      --text-muted: #537362;
+      --accent: #1f8a5b;
+      --accent-soft: rgba(31, 138, 91, 0.12);
+      --border: rgba(22, 43, 32, 0.1);
+    }
+    html[data-theme="spring"].dark {
+      --bg-main: #0f1713;
+      --bg-card: #15201a;
+      --bg-soft: #1d2c24;
+      --text-main: #dfeee6;
+      --text-muted: #8fa99b;
+      --accent: #42b883;
+      --accent-soft: rgba(66, 184, 131, 0.16);
+      --border: rgba(223, 238, 230, 0.1);
+    }
+    html[data-theme="summer"] {
+      --bg-main: #f2fafc;
+      --bg-card: #ffffff;
+      --bg-soft: #e0f3f7;
+      --text-main: #0f2930;
+      --text-muted: #4b6e78;
+      --accent: #0b6e8a;
+      --accent-soft: rgba(11, 110, 138, 0.12);
+      --border: rgba(15, 41, 48, 0.1);
+    }
+    html[data-theme="summer"].dark {
+      --bg-main: #0e1619;
+      --bg-card: #141f23;
+      --bg-soft: #1b2a30;
+      --text-main: #dceef2;
+      --text-muted: #8aa5ad;
+      --accent: #2ea7c7;
+      --accent-soft: rgba(46, 167, 199, 0.16);
+      --border: rgba(220, 238, 242, 0.1);
+    }
+    html[data-theme="autumn"] {
+      --bg-main: #fdf7f2;
+      --bg-card: #ffffff;
+      --bg-soft: #f9ece0;
+      --text-main: #2d1c10;
+      --text-muted: #785842;
+      --accent: #c45d24;
+      --accent-soft: rgba(196, 93, 36, 0.12);
+      --border: rgba(45, 28, 16, 0.1);
+    }
+    html[data-theme="autumn"].dark {
+      --bg-main: #18120e;
+      --bg-card: #211914;
+      --bg-soft: #2c211b;
+      --text-main: #f2e5dc;
+      --text-muted: #ab9485;
+      --accent: #e07b3f;
+      --accent-soft: rgba(224, 123, 63, 0.16);
+      --border: rgba(242, 229, 220, 0.1);
+    }
+    html[data-theme="winter"] {
+      --bg-main: #f4f8fc;
+      --bg-card: #ffffff;
+      --bg-soft: #e6eff8;
+      --text-main: #132238;
+      --text-muted: #52698a;
+      --accent: #2c67b8;
+      --accent-soft: rgba(44, 103, 184, 0.12);
+      --border: rgba(19, 34, 56, 0.1);
+    }
+    html[data-theme="winter"].dark {
+      --bg-main: #0f141c;
+      --bg-card: #151c27;
+      --bg-soft: #1d2736;
+      --text-main: #dfeaf7;
+      --text-muted: #8c9eb8;
+      --accent: #578fd9;
+      --accent-soft: rgba(87, 143, 217, 0.16);
+      --border: rgba(223, 234, 247, 0.1);
+    }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .reader-font {
+      font-family: 'Lora', serif;
+    }
+    .surface-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .surface-soft {
+      background-color: var(--bg-soft);
+    }
+    .accent-text {
+      color: var(--accent);
+    }
+    .accent-bg {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+    @keyframes twinkle {
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+    .frame-sparkle {
+      animation: twinkle 2.4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="app" class="flex-1 flex flex-col"></div>
+
+  <script>
+    const SAMPLE_NOVELS = [
+      {
+        id: "demo-1",
+        title: "Báo Động Phía Trước Có Năng Lượng Cao",
+        synopsis: "Vô hạn lưu kết hợp hệ thống sinh tồn kỳ lạ. Khi chuông báo động vang lên, mỗi lựa chọn đều đánh đổi bằng sinh mệnh và điểm năng lượng.",
+        cover_url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+        translator_name: "Trăng Nhỏ",
+        status: "ONGOING",
+        is_published: true,
+        chapters: [
+          { id: "c1", chapter_number: 1, title: "Chương 01: Tiếng còi lúc nửa đêm", content: "Đồng hồ điểm 00:00, căn phòng bỗng chìm vào sắc xanh nhạt.\n\nMột dòng chữ nhỏ hiện lên trước mắt cô: 'Cảnh báo: Phát hiện nguồn năng lượng cao đang tiến gần.'\n\nCô hít sâu một hơi, siết chặt chiếc đèn pin nhỏ trong tay và bước ra khỏi ngưỡng cửa.", access_type: "FREE", price: 0, is_published: true, read_count: 142, purchase_count: 0 },
+          { id: "c2", chapter_number: 2, title: "Chương 02: Quy tắc của căn phòng trống", content: "Không có tiếng bước chân, chỉ có nhịp tim đập đều trong không gian tĩnh lặng.\n\nAi bước vào đây cũng phải giữ im lặng tuyệt đối cho tới khi ánh sáng đỏ tắt hẳn.", access_type: "PREMIUM", price: 5000, is_published: true, read_count: 89, purchase_count: 34 }
+        ]
+      },
+      {
+        id: "demo-2",
+        title: "Thiên Kim Giả Và Hai Thiếu Gia Song Sinh",
+        synopsis: "Trở về nhà họ lớn sau bao năm xa cách, cô tưởng mình chỉ là nhân vật phụ lặng lẽ — nào ngờ hai anh em song sinh lại giữ bí mật chẳng ai đoán ra.",
+        cover_url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80",
+        translator_name: "Trăng Nhỏ",
+        status: "ONGOING",
+        is_published: true,
+        chapters: [
+          { id: "c3", chapter_number: 1, title: "Chương 01: Chuyến xe về nhà", content: "Ánh nắng chiều đổ dài trên bậc thềm đá trắng.\n\nCô xách chiếc túi vải nhỏ, nhìn cánh cửa lớn mở ra và tự nhủ lần này mình sẽ sống thật thảnh thơi.", access_type: "FREE", price: 0, is_published: true, read_count: 198, purchase_count: 0 }
+        ]
+      }
+    ];
+
+    const FRAME_STYLES = {
+      cosmos: { label: "Trăng Sao", ring: "ring-4 ring-purple-400/70", badge: "✨" },
+      spring: { label: "Mùa Xuân", ring: "ring-4 ring-emerald-400/80", badge: "🌸" },
+      summer: { label: "Mùa Hạ", ring: "ring-4 ring-sky-400/80", badge: "🌊" },
+      autumn: { label: "Mùa Thu", ring: "ring-4 ring-amber-500/80", badge: "🍁" },
+      winter: { label: "Mùa Đông", ring: "ring-4 ring-blue-300/80", badge: "❄️" }
+    };
+
+    const state = {
+      view: "home",
+      theme: "cosmos",
+      dark: false,
+      user: null,
+      profile: {
+        display_name: "Độc Giả Trăng Sao",
+        avatar_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+        avatar_frame: "cosmos",
+        role: "READER"
+      },
+      walletBalance: 25000,
+      spentTotal: 15000,
+      unlockedChapterIds: ["c1", "c3"],
+      novels: JSON.parse(JSON.stringify(SAMPLE_NOVELS)),
+      activeNovelId: "demo-1",
+      activeChapterId: "c1",
+      bannerIndex: 0,
+      authModalOpen: false,
+      authMode: "login",
+      authEmail: "",
+      authPassword: "",
+      authMessage: "",
+      adminTab: "publish",
+      adminSelectedNovelId: "demo-1",
+      adminNewNovelOpen: false,
+      adminNewTitle: "",
+      adminNewTranslator: "Trăng Nhỏ",
+      adminNewSynopsis: "",
+      adminNewCover: "",
+      adminBatchText: "",
+      adminBatchAccess: "FREE",
+      adminBatchPrice: 5000,
+      adminBankName: "MB Bank",
+      adminBankAccount: "",
+      adminWithdrawAmount: 0,
+      adminWithdrawHistory: [],
+      leaderboard: [
+        { name: "Mây Ngủ Ngày", points: 120 },
+        { name: "Gió Qua Kẽ Lá", points: 85 },
+        { name: "Đêm Trăng Non", points: 60 }
+      ],
+      toast: ""
+    };
+
+    let sbClient = null;
+    if (window.supabase && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && !window.SUPABASE_CONFIG.url.includes("xxxxx")) {
+      sbClient = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    }
+
+    function showToast(msg) {
+      state.toast = msg;
+      render();
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        state.toast = "";
+        render();
+      }, 2800);
+    }
+
+    function applyTheme() {
+      const hour = new Date().getHours();
+      if (state.dark === null) {
+        state.dark = hour >= 18 || hour < 6;
+      }
+      document.documentElement.setAttribute("data-theme", state.theme);
+      document.documentElement.classList.toggle("dark", Boolean(state.dark));
+    }
+
+    function toggleDark() {
+      state.dark = !state.dark;
+      applyTheme();
+      render();
+    }
+
+    function getReadingPoints() {
+      return Math.floor(state.spentTotal / 1000);
+    }
+
+    function formatMoney(num) {
+      return Number(num || 0).toLocaleString("vi-VN") + "đ";
+    }
+
+    function openChapter(novelId, chapterId) {
+      if (!state.user) {
+        state.authModalOpen = true;
+        state.authMode = "login";
+        state.authMessage = "Bạn cần đăng nhập để mở phòng đọc truyện nhé!";
+        render();
+        return;
+      }
+      const novel = state.novels.find(n => n.id === novelId) || state.novels[0];
+      const chapter = novel?.chapters.find(c => c.id === chapterId) || novel?.chapters[0];
+      if (!novel || !chapter) return;
+
+      const isUnlocked = chapter.access_type === "FREE" || state.unlockedChapterIds.includes(chapter.id);
+      if (!isUnlocked) {
+        if (state.walletBalance < chapter.price) {
+          showToast("Số dư ví chưa đủ để mở chương này. Hãy nạp thêm tiền nhé!");
+          state.view = "wallet";
+          render();
+          return;
+        }
+        state.walletBalance -= chapter.price;
+        state.spentTotal += chapter.price;
+        state.unlockedChapterIds.push(chapter.id);
+        chapter.purchase_count = (chapter.purchase_count || 0) + 1;
+        showToast("Đã mở khóa " + chapter.title + "!");
+      }
+
+      chapter.read_count = (chapter.read_count || 0) + 1;
+      state.activeNovelId = novel.id;
+      state.activeChapterId = chapter.id;
+      state.view = "reader";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      if (!state.authEmail.trim() || !state.authPassword.trim()) {
+        state.authMessage = "Vui lòng nhập đầy đủ email và mật khẩu.";
+        render();
+        return;
+      }
+      if (sbClient) {
+        const res = state.authMode === "signup"
+          ? await sbClient.auth.signUp({ email: state.authEmail.trim(), password: state.authPassword })
+          : await sbClient.auth.signInWithPassword({ email: state.authEmail.trim(), password: state.authPassword });
+        if (res.error) {
+          state.authMessage = res.error.message;
+          render();
+          return;
+        }
+        state.user = res.data.user || { email: state.authEmail.trim() };
+      } else {
+        state.user = { email: state.authEmail.trim() };
+        if (state.authEmail.trim().toLowerCase().includes("admin")) {
+          state.profile.role = "ADMIN";
+        }
+      }
+      state.authModalOpen = false;
+      state.authMessage = "";
+      showToast("Đăng nhập thành công!");
+      render();
+    }
+
+    function logoutUser() {
+      if (sbClient) sbClient.auth.signOut();
+      state.user = null;
+      if (state.view === "reader" || state.view === "admin") state.view = "home";
+      showToast("Đã đăng xuất.");
+      render();
+    }
+
+    function renderCuteMoonLogo() {
+      return `
+        <svg class="w-9 h-9 frame-sparkle" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="18" fill="url(#moonGrad)"/>
+          <circle cx="31" cy="18" r="14" fill="var(--bg-card)"/>
+          <circle cx="17" cy="27" r="2" fill="#ff9ebb" opacity="0.7"/>
+          <circle cx="25" cy="33" r="1.6" fill="#ff9ebb" opacity="0.6"/>
+          <defs>
+            <linearGradient id="moonGrad" x1="6" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#ffe27a"/>
+              <stop offset="1" stop-color="#f6a63b"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      `;
+    }
+
+    function renderHeader() {
+      const myPoints = getReadingPoints();
+      return `
+        <header class="sticky top-0 z-30 surface-card backdrop-blur border-b px-4 py-3">
+          <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <button onclick="state.view='home'; render();" class="flex items-center gap-2.5 text-left">
+              ${renderCuteMoonLogo()}
+              <div>
+                <div class="font-bold text-base leading-tight">Trăng Nhỏ Mê Thịt</div>
+                <div class="text-xs" style="color: var(--text-muted)">Tiệm truyện đêm khuya</div>
+              </div>
+            </button>
+
+            <nav class="flex items-center gap-1.5 sm:gap-2 text-sm font-medium">
+              <button onclick="state.view='home'; render();" class="px-3 py-1.5 rounded-full ${state.view==='home' ? 'accent-bg' : 'surface-soft'}">Trang chủ</button>
+              <button onclick="state.view='discover'; render();" class="px-3 py-1.5 rounded-full ${state.view==='discover' ? 'accent-bg' : 'surface-soft'}">Tủ truyện</button>
+              <button onclick="state.view='account'; render();" class="px-3 py-1.5 rounded-full ${state.view==='account' ? 'accent-bg' : 'surface-soft'}">Tài khoản (${myPoints} điểm)</button>
+              <button onclick="state.view='admin'; render();" class="px-3 py-1.5 rounded-full ${state.view==='admin' ? 'accent-bg' : 'surface-soft'}">Quản trị</button>
+            </nav>
+
+            <div class="flex items-center gap-2.5">
+              <button onclick="state.view='wallet'; render();" class="px-3.5 py-1.5 rounded-full text-sm font-semibold surface-card border hover:opacity-90">
+                Ví: <span class="accent-text">${formatMoney(state.walletBalance)}</span>
+              </button>
+              <button onclick="toggleDark();" title="Bật/tắt giao diện tối" class="w-9 h-9 rounded-full surface-card border flex items-center justify-center text-base hover:opacity-90">
+                ${state.dark ? "☀️" : "🌙"}
+              </button>
+              ${state.user
+                ? `<button onclick="logoutUser();" class="px-3 py-1.5 rounded-full text-xs font-medium surface-soft">Đăng xuất</button>`
+                : `<button onclick="state.authModalOpen=true; state.authMode='login'; render();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold accent-bg">Đăng nhập</button>`
+              }
+            </div>
+          </div>
+        </header>
+      `;
+    }
+
+    function renderHome() {
+      const activeNovel = state.novels[state.bannerIndex % state.novels.length] || state.novels[0];
+      const combinedBoard = [
+        ...state.leaderboard,
+        { name: state.profile.display_name + (state.user ? "" : " (Bạn)"), points: getReadingPoints() }
+      ].sort((a, b) => b.points - a.points);
+
+      return `
+        <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-8 flex-1">
+          <section class="surface-card rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+            <img src="${activeNovel.cover_url}" alt="${activeNovel.title}" class="w-40 h-56 object-cover rounded-2xl shadow shrink-0" />
+            <div class="space-y-3 flex-1">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold surface-soft accent-text">
+                <span>✦ Đề cử tự động mỗi 5 giây (${(state.bannerIndex % state.novels.length) + 1}/${state.novels.length})</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-bold">${activeNovel.title}</h1>
+              <p class="text-sm sm:text-base leading-relaxed" style="color: var(--text-muted)">${activeNovel.synopsis}</p>
+              <div class="pt-2 flex flex-wrap gap-3">
+                <button onclick="openChapter('${activeNovel.id}', '${activeNovel.chapters[0]?.id || ''}');" class="px-5 py-2.5 rounded-full text-sm font-semibold accent-bg">
+                  Đọc ngay từ chương đầu
+                </button>
+                <button onclick="state.activeNovelId='${activeNovel.id}'; state.view='novel'; render();" class="px-4 py-2.5 rounded-full text-sm font-semibold surface-soft">
+                  Xem mục lục
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-bold">Truyện mới cập nhật</h2>
+              <button onclick="state.view='discover'; render();" class="text-sm font-semibold accent-text">Xem tất cả →</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              ${state.novels.map(n => `
+                <article class="surface-card rounded-2xl p-4 flex gap-4">
+                  <img src="${n.cover_url || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=300&q=80'}" alt="${n.title}" class="w-24 h-32 object-cover rounded-xl shrink-0" />
+                  <div class="flex flex-col justify-between flex-1 min-w-0">
+                    <div>
+                      <h3 class="font-bold text-base line-clamp-2">${n.title}</h3>
+                      <p class="text-xs mt-1 line-clamp-2" style="color: var(--text-muted)">${n.synopsis}</p>
+                    </div>
+                    <div class="pt-3 flex items-center justify-between">
+                      <span class="text-xs font-medium accent-text">${n.chapters.length} chương</span>
+                      <button onclick="openChapter('${n.id}', '${n.chapters[0]?.id || ''}');" class="px-3 py-1 rounded-full text-xs font-semibold accent-bg">Đọc</button>
+                    </div>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="surface-card rounded-3xl p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 class="text-lg font-bold">Bảng xếp hạng Điểm Đọc</h2>
+                <p class="text-xs" style="color: var(--text-muted)">Quy đổi tự động: cứ chi 1.000đ mở khóa chương = +1 điểm đọc</p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold surface-soft accent-text">Điểm của bạn: ${getReadingPoints()} điểm</span>
+            </div>
+            <div class="divide-y" style="border-color: var(--border)">
+              ${combinedBoard.map((item, idx) => `
+                <div class="py-2.5 flex items-center justify-between text-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded-full surface-soft flex items-center justify-center text-xs font-bold">${idx + 1}</span>
+                    <span class="font-medium">${item.name}</span>
+                  </div>
+                  <span class="font-bold accent-text">${item.points} điểm</span>
+                </div>
+              `).join("")}
+            </div>
+          </section>
+        </main>
+      `;
+    }
+
+    function renderDiscover() {
+      return `
+        <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <h1 class="text-2xl font-bold">Tủ truyện</h1>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            ${state.novels.map(n => `
+              <div class="surface-card rounded-2xl p-4 flex gap-4">
+                <img src="${n.cover_url || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=300&q=80'}" class="w-28 h-36 object-cover rounded-xl shrink-0" />
+                <div class="flex-1 space-y-2">
+                  <h2 class="font-bold text-lg">${n.title}</h2>
+                  <p class="text-xs line-clamp-3" style="color: var(--text-muted)">${n.synopsis}</p>
+                  <div class="pt-2 flex gap-2">
+                    <button onclick="openChapter('${n.id}', '${n.chapters[0]?.id || ''}');" class="px-4 py-1.5 rounded-full text-xs font-semibold accent-bg">Đọc ngay</button>
+                    <button onclick="state.activeNovelId='${n.id}'; state.view='novel'; render();" class="px-3 py-1.5 rounded-full text-xs font-semibold surface-soft">Danh sách chương (${n.chapters.length})</button>
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </main>
+      `;
+    }
+
+    function renderNovelDetail() {
+      const novel = state.novels.find(n => n.id === state.activeNovelId) || state.novels[0];
+      return `
+        <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <button onclick="state.view='home'; render();" class="text-sm font-semibold accent-text">← Quay lại trang chủ</button>
+          <div class="surface-card rounded-3xl p-6 flex flex-col sm:flex-row gap-6">
+            <img src="${novel.cover_url || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'}" class="w-40 h-56 object-cover rounded-2xl shrink-0" />
+            <div class="space-y-2">
+              <h1 class="text-2xl font-bold">${novel.title}</h1>
+              <div class="text-xs" style="color: var(--text-muted)">Dịch giả: ${novel.translator_name || "Trăng Nhỏ"}</div>
+              <p class="text-sm leading-relaxed pt-1" style="color: var(--text-muted)">${novel.synopsis}</p>
+            </div>
+          </div>
+          <div class="surface-card rounded-3xl p-6 space-y-3">
+            <h2 class="font-bold text-lg">Danh sách chương</h2>
+            ${novel.chapters.map(c => {
+              const unlocked = c.access_type === "FREE" || state.unlockedChapterIds.includes(c.id);
+              return `
+                <div class="p-3 rounded-xl surface-soft flex items-center justify-between gap-3">
+                  <div>
+                    <div class="font-semibold text-sm">${c.title}</div>
+                    <div class="text-xs" style="color: var(--text-muted)">${c.access_type === "FREE" ? "Miễn phí" : (unlocked ? "Đã mở khóa" : "Trả phí • " + formatMoney(c.price))}</div>
+                  </div>
+                  <button onclick="openChapter('${novel.id}', '${c.id}');" class="px-4 py-1.5 rounded-full text-xs font-semibold accent-bg">
+                    ${unlocked ? "Đọc" : "Mở khóa"}
+                  </button>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </main>
+      `;
+    }
+
+    function renderReadingRoom() {
+      if (!state.user) {
+        return `<main class="max-w-xl mx-auto px-4 py-12 text-center space-y-4">
+          <p class="font-semibold">Vui lòng đăng nhập để đọc truyện.</p>
+          <button onclick="state.authModalOpen=true; render();" class="px-5 py-2 rounded-full text-sm font-semibold accent-bg">Đăng nhập ngay</button>
+        </main>`;
+      }
+      const novel = state.novels.find(n => n.id === state.activeNovelId) || state.novels[0];
+      const chapter = novel.chapters.find(c => c.id === state.activeChapterId) || novel.chapters[0];
+      const idx = novel.chapters.findIndex(c => c.id === chapter.id);
+      const nextChapter = novel.chapters[idx + 1];
+
+      return `
+        <main class="max-w-3xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <div class="flex items-center justify-between text-sm">
+            <button onclick="state.activeNovelId='${novel.id}'; state.view='novel'; render();" class="font-semibold accent-text">← Mục lục truyện</button>
+            <span class="text-xs" style="color: var(--text-muted)">${novel.title}</span>
+          </div>
+          <article class="surface-card rounded-3xl p-6 sm:p-10 space-y-6">
+            <h1 class="text-2xl font-bold">${chapter.title}</h1>
+            <div class="reader-font text-lg leading-relaxed space-y-4 whitespace-pre-line">${chapter.content}</div>
+            <div class="pt-6 border-t flex justify-between items-center" style="border-color: var(--border)">
+              <button onclick="state.view='home'; render();" class="px-4 py-2 rounded-full text-xs font-semibold surface-soft">Về trang chủ</button>
+              ${nextChapter
+                ? `<button onclick="openChapter('${novel.id}', '${nextChapter.id}');" class="px-5 py-2 rounded-full text-xs font-semibold accent-bg">Chương tiếp theo →</button>`
+                : `<span class="text-xs" style="color: var(--text-muted)">Hết chương hiện có</span>`
+              }
+            </div>
+          </article>
+        </main>
+      `;
+    }
+
+    function renderAccount() {
+      const frame = FRAME_STYLES[state.profile.avatar_frame] || FRAME_STYLES.cosmos;
+      return `
+        <main class="max-w-3xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <h1 class="text-2xl font-bold">Tài khoản độc giả</h1>
+          <div class="surface-card rounded-3xl p-6 space-y-5">
+            <div class="flex flex-wrap items-center gap-5">
+              <div class="relative">
+                <img src="${state.profile.avatar_url}" class="w-20 h-20 rounded-full object-cover ${frame.ring}" />
+                <span class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full surface-card flex items-center justify-center text-sm shadow frame-sparkle">${frame.badge}</span>
+              </div>
+              <div class="space-y-1">
+                <div class="font-bold text-lg">${state.profile.display_name}</div>
+                <div class="text-xs" style="color: var(--text-muted)">${state.user ? state.user.email : "Chưa đăng nhập tài khoản thật"}</div>
+                <div class="text-sm font-semibold accent-text">Điểm đọc hiện tại: ${getReadingPoints()} điểm</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <label class="block text-xs font-semibold mb-1">Tên hiển thị (Username)</label>
+                <input id="inpDisplayName" value="${state.profile.display_name}" class="w-full px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold mb-1">Link ảnh đại diện (Avatar URL)</label>
+                <input id="inpAvatarUrl" value="${state.profile.avatar_url}" class="w-full px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold mb-2">Khung avatar 4 mùa lấp lánh</label>
+              <div class="flex flex-wrap gap-2">
+                ${Object.entries(FRAME_STYLES).map(([key, f]) => `
+                  <button onclick="state.profile.avatar_frame='${key}'; render();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold ${state.profile.avatar_frame === key ? 'accent-bg' : 'surface-soft'}">
+                    ${f.badge} ${f.label}
+                  </button>
+                `).join("")}
+              </div>
+            </div>
+
+            <button onclick="
+              state.profile.display_name = document.getElementById('inpDisplayName').value.trim() || 'Độc Giả Trăng Sao';
+              state.profile.avatar_url = document.getElementById('inpAvatarUrl').value.trim() || state.profile.avatar_url;
+              showToast('Đã lưu thông tin tài khoản!');
+              render();
+            " class="px-5 py-2.5 rounded-full text-sm font-semibold accent-bg">Lưu thay đổi</button>
+          </div>
+        </main>
+      `;
+    }
+
+    function renderWallet() {
+      return `
+        <main class="max-w-2xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <h1 class="text-2xl font-bold">Ví tiền đọc truyện</h1>
+          <div class="surface-card rounded-3xl p-6 space-y-4">
+            <div class="text-xs" style="color: var(--text-muted)">Số dư hiện tại</div>
+            <div class="text-3xl font-bold accent-text">${formatMoney(state.walletBalance)}</div>
+            <p class="text-xs leading-relaxed" style="color: var(--text-muted)">
+              Khi chạy bản web thật với PayOS/SePay, độc giả bấm nạp tiền sẽ hiện mã QR chuyển khoản ngân hàng của bạn và tự động cộng tiền vào ví. Dưới đây là nút nạp thử nhanh để kiểm tra giao diện:
+            </p>
+            <div class="flex flex-wrap gap-2.5 pt-2">
+              ${[10000, 20000, 50000, 100000].map(amt => `
+                <button onclick="state.walletBalance += ${amt}; showToast('Đã nạp thử +' + formatMoney(${amt})); render();" class="px-4 py-2 rounded-full text-xs font-semibold accent-bg">
+                  + Nạp thử ${formatMoney(amt)}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        </main>
+      `;
+    }
+
+    function renderAdmin() {
+      const totalChapters = state.novels.reduce((sum, n) => sum + n.chapters.length, 0);
+      const selectedNovel = state.novels.find(n => n.id === state.adminSelectedNovelId) || state.novels[0];
+      const maxPurchases = Math.max(1, ...state.novels.map(n => n.chapters.reduce((s, c) => s + (c.purchase_count || 0), 0)));
+
+      return `
+        <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h1 class="text-2xl font-bold">Quản trị Trăng Nhỏ</h1>
+            <div class="flex gap-2">
+              <button onclick="state.adminTab='publish'; render();" class="px-4 py-2 rounded-full text-xs font-semibold ${state.adminTab==='publish' ? 'accent-bg' : 'surface-soft'}">Đăng truyện</button>
+              <button onclick="state.adminTab='stats'; render();" class="px-4 py-2 rounded-full text-xs font-semibold ${state.adminTab==='stats' ? 'accent-bg' : 'surface-soft'}">Xu hướng & Biểu đồ</button>
+              <button onclick="state.adminTab='revenue'; render();" class="px-4 py-2 rounded-full text-xs font-semibold ${state.adminTab==='revenue' ? 'accent-bg' : 'surface-soft'}">Ví doanh thu & Rút tiền</button>
+            </div>
+          </div>
+
+          <div class="surface-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs font-semibold">Giao diện mùa hiện tại:</span>
+            <div class="flex flex-wrap gap-2">
+              ${[["cosmos","Trăng Sao"],["spring","Xuân"],["summer","Hạ"],["autumn","Thu"],["winter","Đông"]].map(([k, lbl]) => `
+                <button onclick="state.theme='${k}'; applyTheme(); render();" class="px-3 py-1 rounded-full text-xs font-semibold ${state.theme===k ? 'accent-bg' : 'surface-soft'}">${lbl}</button>
+              `).join("")}
+            </div>
+          </div>
+
+          ${state.adminTab === "publish" ? `
+            <div class="surface-card rounded-3xl p-6 space-y-5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h2 class="font-bold text-lg">Danh sách truyện (${state.novels.length} truyện • ${totalChapters} chương)</h2>
+                <button onclick="state.adminNewNovelOpen = !state.adminNewNovelOpen; render();" class="px-4 py-2 rounded-full text-xs font-semibold accent-bg">
+                  ${state.adminNewNovelOpen ? "Đóng form truyện mới" : "+ Truyện mới"}
+                </button>
+              </div>
+
+              ${state.adminNewNovelOpen ? `
+                <div class="p-4 rounded-2xl surface-soft space-y-3">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input placeholder="Tên truyện..." value="${state.adminNewTitle}" oninput="state.adminNewTitle=this.value" class="px-3.5 py-2 rounded-xl surface-card border text-sm" style="border-color: var(--border)" />
+                    <input placeholder="Tên dịch giả..." value="${state.adminNewTranslator}" oninput="state.adminNewTranslator=this.value" class="px-3.5 py-2 rounded-xl surface-card border text-sm" style="border-color: var(--border)" />
+                  </div>
+                  <input placeholder="Link ảnh bìa truyện (URL)..." value="${state.adminNewCover}" oninput="state.adminNewCover=this.value" class="w-full px-3.5 py-2 rounded-xl surface-card border text-sm" style="border-color: var(--border)" />
+                  <textarea rows="2" placeholder="Giới thiệu truyện..." oninput="state.adminNewSynopsis=this.value" class="w-full px-3.5 py-2 rounded-xl surface-card border text-sm" style="border-color: var(--border)">${state.adminNewSynopsis}</textarea>
+                  <button onclick="
+                    if (!state.adminNewTitle.trim()) { showToast('Vui lòng nhập tên truyện!'); return; }
+                    const newId = 'nov-' + Date.now();
+                    state.novels.unshift({
+                      id: newId,
+                      title: state.adminNewTitle.trim(),
+                      translator_name: state.adminNewTranslator.trim() || 'Trăng Nhỏ',
+                      cover_url: state.adminNewCover.trim() || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80',
+                      synopsis: state.adminNewSynopsis.trim() || 'Đang cập nhật giới thiệu...',
+                      is_published: true,
+                      chapters: []
+                    });
+                    state.adminSelectedNovelId = newId;
+                    state.adminNewTitle = '';
+                    state.adminNewCover = '';
+                    state.adminNewSynopsis = '';
+                    state.adminNewNovelOpen = false;
+                    showToast('Đã tạo truyện mới!');
+                    render();
+                  " class="px-5 py-2 rounded-full text-xs font-semibold accent-bg">Lưu truyện mới</button>
+                </div>
+              ` : ""}
+
+              <div class="flex flex-wrap gap-2">
+                ${state.novels.map(n => `
+                  <button onclick="state.adminSelectedNovelId='${n.id}'; render();" class="px-3.5 py-2 rounded-xl text-xs font-semibold ${selectedNovel.id===n.id ? 'accent-bg' : 'surface-soft'}">
+                    ${n.title}
+                  </button>
+                `).join("")}
+              </div>
+
+              <div class="pt-3 border-t space-y-3" style="border-color: var(--border)">
+                <h3 class="font-bold">Thêm chương hàng loạt cho: <span class="accent-text">${selectedNovel.title}</span></h3>
+                <div class="flex flex-wrap gap-3 items-center text-xs">
+                  <select onchange="state.adminBatchAccess=this.value; render();" class="px-3 py-1.5 rounded-xl surface-soft border" style="border-color: var(--border)">
+                    <option value="FREE" ${state.adminBatchAccess==='FREE'?'selected':''}>Chương miễn phí</option>
+                    <option value="PREMIUM" ${state.adminBatchAccess==='PREMIUM'?'selected':''}>Chương trả phí</option>
+                  </select>
+                  <input type="number" value="${state.adminBatchPrice}" oninput="state.adminBatchPrice=Number(this.value||0)" placeholder="Phí chương (đ)" class="w-36 px-3 py-1.5 rounded-xl surface-soft border" style="border-color: var(--border)" />
+                </div>
+                <textarea rows="5" placeholder="Dán văn bản có tiêu đề dạng: Chương 01: Tên chương..." oninput="state.adminBatchText=this.value" class="w-full px-3.5 py-2.5 rounded-2xl surface-soft border text-sm" style="border-color: var(--border)">${state.adminBatchText}</textarea>
+                <button onclick="
+                  const raw = state.adminBatchText.trim();
+                  if (!raw) { showToast('Hãy dán nội dung chương trước nhé!'); return; }
+                  const parts = raw.split(/(?=Chương\\s+\\d+[:.])/i).filter(Boolean);
+                  const list = parts.length ? parts : [raw];
+                  list.forEach((chunk, idx) => {
+                    const firstLine = chunk.split('\\n')[0].trim();
+                    const num = selectedNovel.chapters.length + 1;
+                    selectedNovel.chapters.push({
+                      id: 'ch-' + Date.now() + '-' + idx,
+                      chapter_number: num,
+                      title: /^Chương\\s+\\d+/i.test(firstLine) ? firstLine : ('Chương ' + String(num).padStart(2,'0') + ': Nội dung mới'),
+                      content: chunk.replace(/^Chương\\s+\\d+[^\\n]*\\n?/, '').trim() || chunk.trim(),
+                      access_type: state.adminBatchAccess,
+                      price: state.adminBatchAccess === 'PREMIUM' ? state.adminBatchPrice : 0,
+                      is_published: true,
+                      read_count: 0,
+                      purchase_count: 0
+                    });
+                  });
+                  state.adminBatchText = '';
+                  showToast('Đã tách và thêm ' + list.length + ' chương!');
+                  render();
+                " class="px-5 py-2.5 rounded-full text-xs font-semibold accent-bg">Tách & Thêm chương</button>
+              </div>
+
+              <div class="pt-4 border-t space-y-2" style="border-color: var(--border)">
+                <h4 class="font-bold text-sm">Danh sách chương của truyện</h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr class="border-b" style="border-color: var(--border); color: var(--text-muted)">
+                        <th class="py-2 pr-3">Chương</th>
+                        <th class="py-2 pr-3">Trạng thái</th>
+                        <th class="py-2 pr-3">Lượt đọc</th>
+                        <th class="py-2 pr-3">Lượt mua</th>
+                        <th class="py-2">Loại / Phí</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${selectedNovel.chapters.map(c => `
+                        <tr class="border-b" style="border-color: var(--border)">
+                          <td class="py-2 pr-3 font-medium">${c.title}</td>
+                          <td class="py-2 pr-3">${c.is_published ? "Đã đăng" : "Nháp"}</td>
+                          <td class="py-2 pr-3">${c.read_count || 0}</td>
+                          <td class="py-2 pr-3">${c.purchase_count || 0}</td>
+                          <td class="py-2">${c.access_type === "FREE" ? "Miễn phí" : "Trả phí (" + formatMoney(c.price) + ")"}</td>
+                        </tr>
+                      `).join("")}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ` : state.adminTab === "stats" ? `
+            <div class="surface-card rounded-3xl p-6 space-y-4">
+              <h2 class="font-bold text-lg">Biểu đồ lượt mua chương theo từng truyện</h2>
+              <div class="space-y-3">
+                ${state.novels.map(n => {
+                  const pCount = n.chapters.reduce((s, c) => s + (c.purchase_count || 0), 0);
+                  const pct = Math.round((pCount / maxPurchases) * 100);
+                  return `
+                    <div class="space-y-1">
+                      <div class="flex justify-between text-xs font-semibold">
+                        <span>${n.title}</span>
+                        <span class="accent-text">${pCount} lượt mua</span>
+                      </div>
+                      <div class="w-full h-3 rounded-full surface-soft overflow-hidden">
+                        <div class="h-full accent-bg rounded-full" style="width: ${Math.max(6, pct)}%"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          ` : `
+            <div class="surface-card rounded-3xl p-6 space-y-4">
+              <h2 class="font-bold text-lg">Ví doanh thu quản trị</h2>
+              <div class="text-2xl font-bold accent-text">${formatMoney(state.spentTotal)}</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input placeholder="Tên ngân hàng (VD: Vietcombank, MB)..." value="${state.adminBankName}" oninput="state.adminBankName=this.value" class="px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+                <input placeholder="Số tài khoản ngân hàng..." value="${state.adminBankAccount}" oninput="state.adminBankAccount=this.value" class="px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+              </div>
+              <button onclick="
+                if (!state.adminBankAccount.trim()) { showToast('Hãy nhập số tài khoản ngân hàng trước nhé!'); return; }
+                showToast('Đã lưu thông tin tài khoản rút tiền ' + state.adminBankName + '!');
+              " class="px-5 py-2 rounded-full text-xs font-semibold accent-bg">Lưu tài khoản nhận tiền</button>
+            </div>
+          `}
+        </main>
+      `;
+    }
+
+    function renderAuthModal() {
+      if (!state.authModalOpen) return "";
+      return `
+        <div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div class="surface-card rounded-3xl p-6 w-full max-w-md space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="font-bold text-lg">${state.authMode === "signup" ? "Đăng ký tài khoản" : "Đăng nhập đọc truyện"}</h2>
+              <button onclick="state.authModalOpen=false; render();" class="text-sm font-bold">✕</button>
+            </div>
+            ${state.authMessage ? `<div class="p-3 rounded-xl text-xs surface-soft accent-text font-medium">${state.authMessage}</div>` : ""}
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+              <input type="email" placeholder="Email của bạn..." value="${state.authEmail}" oninput="state.authEmail=this.value" class="w-full px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+              <input type="password" placeholder="Mật khẩu..." value="${state.authPassword}" oninput="state.authPassword=this.value" class="w-full px-3.5 py-2 rounded-xl surface-soft border text-sm" style="border-color: var(--border)" />
+              <button type="submit" class="w-full py-2.5 rounded-full text-sm font-semibold accent-bg">${state.authMode === "signup" ? "Tạo tài khoản" : "Đăng nhập"}</button>
+            </form>
+            <div class="text-center text-xs" style="color: var(--text-muted)">
+              ${state.authMode === "signup"
+                ? `Đã có tài khoản? <button onclick="state.authMode='login'; render();" class="font-semibold accent-text">Đăng nhập</button>`
+                : `Chưa có tài khoản? <button onclick="state.authMode='signup'; render();" class="font-semibold accent-text">Đăng ký ngay</button>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderToast() {
+      if (!state.toast) return "";
+      return `
+        <div class="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-lg accent-bg">
+          ${state.toast}
+        </div>
+      `;
+    }
+
+    function render() {
+      applyTheme();
+      let bodyHtml = "";
+      if (state.view === "discover") bodyHtml = renderDiscover();
+      else if (state.view === "novel") bodyHtml = renderNovelDetail();
+      else if (state.view === "reader") bodyHtml = renderReadingRoom();
+      else if (state.view === "account") bodyHtml = renderAccount();
+      else if (state.view === "wallet") bodyHtml = renderWallet();
+      else if (state.view === "admin") bodyHtml = renderAdmin();
+      else bodyHtml = renderHome();
+
+      document.getElementById("app").innerHTML = `
+        ${renderHeader()}
+        ${bodyHtml}
+        ${renderAuthModal()}
+        ${renderToast()}
+      `;
+    }
+
+    setInterval(() => {
+      if (state.view === "home" && state.novels.length > 1) {
+        state.bannerIndex = (state.bannerIndex + 1) % state.novels.length;
+        render();
+      }
+    }, 5000);
+
+    render();
+  </script>
+</body>
+</html>
